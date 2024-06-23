@@ -244,13 +244,101 @@ public class BarangFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSimpanActionPerformed
 
     private void btnUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahActionPerformed
-        // TODO add your handling code here:
+                // TODO add your handling code here:
+        int index = tblBarang.getSelectedRow();  // Mendapatkan indeks baris yang dipilih dari tabel
         
+         if (index == -1) {
+            JOptionPane.showMessageDialog(this, "Pilih baris yang ingin Diubah.");
+            return;
+        }
+         
+         
+        Barang br = barangList.get(index);  // Mendapatkan objek Barang dari ArrayList berdasarkan indeks
+        
+        br.setNama_barang(fieldNama.getText());  // Mengatur nilai nama_barang dari objek Barang
+        br.setDeskripsi(fieldDeskripsi.getText());  // Mengatur nilai deskripsi dari objek Barang
+        
+        String sql = "UPDATE data_barang SET nama_barang = ?, deskripsi = ? WHERE kode_barang = ?";
+        
+        try {
+            ps = conn.prepareStatement(sql);
+            
+            // Mengatur nilai parameter dalam pernyataan SQL UPDATE
+            ps.setString(1, br.getNama_barang());
+            ps.setString(2, br.getDeskripsi());
+            ps.setString(3, br.getKode_barang());
+            
+            int update  = ps.executeUpdate();  // Eksekusi pernyataan SQL UPDATE
+            
+            if(update > 0){
+                JOptionPane.showMessageDialog(this, "Data Berhasil Di Ubah");
+                
+                // Mengatur agar setelah mengupdate data, fieldnya langsung kosong
+                fieldKode.setText(null); 
+                fieldNama.setText(null);
+                fieldDeskripsi.setText(null);
+                
+            } else {
+                JOptionPane.showMessageDialog(this, "Data Gagal Di Ubah");
+            }
+            
+            tampilkanBarang();  // Memanggil method untuk menampilkan ulang data barang ke dalam tabel
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(BarangFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }//GEN-LAST:event_btnUbahActionPerformed
 
     private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
         // TODO add your handling code here:
         
+        // TODO add your handling code here:
+        int index = tblBarang.getSelectedRow();  // Mendapatkan indeks baris yang dipilih dari tabel
+
+        if (index == -1) {
+            JOptionPane.showMessageDialog(this, "Pilih baris yang ingin dihapus.");
+            return;
+        }
+
+        Barang br = barangList.get(index);  // Mendapatkan objek Barang dari ArrayList berdasarkan indeks
+
+            // Menampilkan dialog konfirmasi sebelum menghapus data
+            int option = JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin menghapus data?", "Konfirmasi Hapus Data", JOptionPane.YES_NO_OPTION);
+            if (option != JOptionPane.YES_OPTION) {
+                return;  // Menghentikan proses jika pengguna memilih "NO"
+            }
+
+            String sql = "DELETE FROM data_barang WHERE kode_barang = ?";
+
+            try {
+                ps = conn.prepareStatement(sql);
+                ps.setString(1, br.getKode_barang());
+
+                int hapus = ps.executeUpdate();
+
+                if (hapus > 0) {
+                    JOptionPane.showMessageDialog(this, "Data Berhasil Dihapus");
+
+                    // Mengatur agar setelah menghapus data, fieldnya langsung kosong
+                    fieldKode.setText(null);
+                    fieldNama.setText(null);
+                    fieldDeskripsi.setText(null);
+
+                    // Menghapus objek Barang dari ArrayList setelah dihapus dari database
+                    barangList.remove(index);
+
+                    // Memperbarui tampilan tabel
+                    tampilkanBarang();
+
+                } else {
+                    JOptionPane.showMessageDialog(this, "Data Gagal Dihapus");
+                }
+
+            } catch (SQLException ex) {
+                Logger.getLogger(BarangFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
     }//GEN-LAST:event_btnHapusActionPerformed
 
     private void tblBarangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBarangMouseClicked
