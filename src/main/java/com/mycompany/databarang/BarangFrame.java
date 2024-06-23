@@ -4,17 +4,40 @@
  */
 package com.mycompany.databarang;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author ZFR
  */
 public class BarangFrame extends javax.swing.JFrame {
 
-    /**
-     * Creates new form BarangFrame
-     */
+    ArrayList<Barang> barangList = new ArrayList<>();  // Untuk menyimpan daftar objek Barang
+    Connection conn;  // Untuk Mengkoneksikan ke database
+    PreparedStatement ps;  // Eksekusi pernyataan SQL terparameter
+    ResultSet rs;  // Menyimpan hasil dari query database
+
+    
+    
     public BarangFrame() {
-        initComponents();
+        
+    initComponents(); 
+    
+    try {
+        conn = DriverManager.getConnection("jdbc:mysql://localhost/barang", "root", ""); // Mendapatkan koneksi ke database MySQL
+    } catch (SQLException ex) {
+        Logger.getLogger(BarangFrame.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    tampilkanBarang(); // Memanggil metode tampilkanBarang() 
     }
 
     /**
@@ -26,21 +49,178 @@ public class BarangFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        txtJudul = new javax.swing.JLabel();
+        txtKode = new javax.swing.JLabel();
+        txtNama = new javax.swing.JLabel();
+        txtDeskripsi = new javax.swing.JLabel();
+        fieldKode = new javax.swing.JTextField();
+        fieldNama = new javax.swing.JTextField();
+        fieldDeskripsi = new javax.swing.JTextField();
+        btnSimpan = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblBarang = new javax.swing.JTable();
+        btnUbah = new javax.swing.JButton();
+        btnHapus = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        txtJudul.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        txtJudul.setText("DATA BARANG");
+
+        txtKode.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        txtKode.setText("Kode Barang");
+
+        txtNama.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        txtNama.setText("Nama Barang");
+
+        txtDeskripsi.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        txtDeskripsi.setText("Deskripsi");
+
+        fieldKode.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        fieldKode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fieldKodeActionPerformed(evt);
+            }
+        });
+
+        fieldNama.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        fieldNama.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fieldNamaActionPerformed(evt);
+            }
+        });
+
+        fieldDeskripsi.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+
+        btnSimpan.setBackground(new java.awt.Color(153, 255, 51));
+        btnSimpan.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        btnSimpan.setText("Simpan");
+        btnSimpan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSimpanActionPerformed(evt);
+            }
+        });
+
+        tblBarang.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        tblBarang.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        tblBarang.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblBarangMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblBarang);
+
+        btnUbah.setBackground(new java.awt.Color(255, 255, 51));
+        btnUbah.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        btnUbah.setText("Ubah");
+        btnUbah.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUbahActionPerformed(evt);
+            }
+        });
+
+        btnHapus.setBackground(new java.awt.Color(255, 153, 102));
+        btnHapus.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        btnHapus.setText("Hapus");
+        btnHapus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHapusActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtJudul)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(txtKode)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(fieldKode))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtNama)
+                            .addComponent(txtDeskripsi))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(fieldDeskripsi, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(fieldNama, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnSimpan)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnUbah)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnHapus))))
+                    .addComponent(jScrollPane1))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(txtJudul)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtKode)
+                    .addComponent(fieldKode, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(fieldNama, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNama))
+                .addGap(16, 16, 16)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(fieldDeskripsi, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtDeskripsi))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnUbah, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnHapus, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void fieldNamaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldNamaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_fieldNamaActionPerformed
+
+    private void fieldKodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fieldKodeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_fieldKodeActionPerformed
+
+    private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_btnSimpanActionPerformed
+
+    private void btnUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_btnUbahActionPerformed
+
+    private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_btnHapusActionPerformed
+
+    private void tblBarangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBarangMouseClicked
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_tblBarangMouseClicked
 
     /**
      * @param args the command line arguments
@@ -78,5 +258,56 @@ public class BarangFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnHapus;
+    private javax.swing.JButton btnSimpan;
+    private javax.swing.JButton btnUbah;
+    private javax.swing.JTextField fieldDeskripsi;
+    private javax.swing.JTextField fieldKode;
+    private javax.swing.JTextField fieldNama;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tblBarang;
+    private javax.swing.JLabel txtDeskripsi;
+    private javax.swing.JLabel txtJudul;
+    private javax.swing.JLabel txtKode;
+    private javax.swing.JLabel txtNama;
     // End of variables declaration//GEN-END:variables
+
+    private void tampilkanBarang() {
+        
+        String sql = "SELECT * FROM data_barang";
+        
+        try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            
+            while(rs.next()){
+                barangList.add(
+                        new Barang(
+                                rs.getString("kode_barang"),
+                                rs.getString("nama_barang"),
+                                rs.getString("deskripsi")
+                        )
+                );
+            }
+            
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(BarangFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        String[] kolom = {"Kode Barang", "Nama Barang", "Deskripsi"};
+        Object[][] data = new Object[barangList.size()][3];
+        
+        for(int i = 0; i < barangList.size(); i++){
+            data[i][0] = barangList.get(i).getKode_barang();
+            data[i][1] = barangList.get(i).getNama_barang();
+            data[i][2] = barangList.get(i).getDeskripsi();
+        }
+        
+        DefaultTableModel tableModel = new DefaultTableModel(data, kolom);
+        tblBarang.setModel(tableModel);
+        
+        
+    }
+    
 }
