@@ -7,6 +7,7 @@
   <li>Laragon ( Untuk Database )</li>
 </ul>
 
+<h4>Cara Menggunakan Project : </h4>
 <ul>
   <li>Buka Laragon dan Tekan Start ALl</li>
   <li>Buat Database di terminal laragon</li>
