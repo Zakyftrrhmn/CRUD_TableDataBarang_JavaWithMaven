@@ -17,4 +17,4 @@
 
 
 <h4>Demo Project : </h4>
-![Screenshot 2024-06-23 221832](https://github.com/Zakyftrrhmn/CRUD_TableDataBarang_JavaWithMaven/assets/121219447/04705dc3-991d-4890-bc1e-770cc53c4152)
+![image](https://github.com/Zakyftrrhmn/CRUD_TableDataBarang_JavaWithMaven/assets/121219447/04705dc3-991d-4890-bc1e-770cc53c4152)
