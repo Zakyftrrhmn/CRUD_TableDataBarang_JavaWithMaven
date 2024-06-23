@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -205,6 +206,41 @@ public class BarangFrame extends javax.swing.JFrame {
     private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
         // TODO add your handling code here:
         
+        String sql = "INSERT INTO data_barang VALUES(?, ?, ?)"; // Query untuk melakukan Tambah data ke tabel data_barang
+        
+        try {
+            ps = conn.prepareStatement(sql);// Mempersiapkan statement SQL untuk eksekusi INSERT
+            
+            
+            // Mengatur nilai parameter sesuai dengan nilai yang diambil dari field teks pada GUI
+            ps.setString(1, fieldKode.getText());
+            ps.setString(2, fieldNama.getText());
+            ps.setString(3, fieldDeskripsi.getText());
+            
+            // Mengeksekusi pernyataan SQL untuk menyimpan data
+            int simpan = ps.executeUpdate();
+            
+            // Menampilkan pesan berhasil atau gagal berdasarkan hasil eksekusi
+            if(simpan > 0){
+                JOptionPane.showMessageDialog(this, "Data Berhasil Disimpan");
+                
+                
+//              Mengatur agar setelah menambahkan data fieldnya langsung kosong
+                fieldKode.setText(null); 
+                fieldNama.setText(null);
+                fieldDeskripsi.setText(null);
+                
+            }else{
+                JOptionPane.showMessageDialog(this, "Data Gagal Disimpan");
+            }
+            
+            tampilkanBarang();
+            
+            
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(BarangFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnSimpanActionPerformed
 
     private void btnUbahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUbahActionPerformed
@@ -219,7 +255,13 @@ public class BarangFrame extends javax.swing.JFrame {
 
     private void tblBarangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBarangMouseClicked
         // TODO add your handling code here:
+        int index = tblBarang.getSelectedRow();  // Mendapatkan indeks baris yang dipilih dari tabel
+        Barang br = barangList.get(index);  // Mendapatkan objek Barang dari ArrayList berdasarkan indeks
         
+        // Mengatur nilai field teks dengan nilai dari objek Barang yang dipilih
+        fieldKode.setText(br.getKode_barang());
+        fieldNama.setText(br.getNama_barang());
+        fieldDeskripsi.setText(br.getDeskripsi());
     }//GEN-LAST:event_tblBarangMouseClicked
 
     /**
@@ -274,12 +316,16 @@ public class BarangFrame extends javax.swing.JFrame {
 
     private void tampilkanBarang() {
         
+        barangList.clear(); // Menghapus isi dari ArrayList barangList 
+        
         String sql = "SELECT * FROM data_barang";
         
         try {
-            ps = conn.prepareStatement(sql);
-            rs = ps.executeQuery();
+            ps = conn.prepareStatement(sql); // Mempersiapkan statement SQL
+            rs = ps.executeQuery(); // Mengeksekusi query dan mendapatkan hasilnya
             
+            
+            // Memproses hasil query dan menambahkan data barang ke dalam ArrayList barangList
             while(rs.next()){
                 barangList.add(
                         new Barang(
@@ -295,8 +341,8 @@ public class BarangFrame extends javax.swing.JFrame {
             Logger.getLogger(BarangFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        String[] kolom = {"Kode Barang", "Nama Barang", "Deskripsi"};
-        Object[][] data = new Object[barangList.size()][3];
+        String[] kolom = {"Kode Barang", "Nama Barang", "Deskripsi"}; // Menyiapkan kolom-kolom untuk tabel
+        Object[][] data = new Object[barangList.size()][3]; // Menyiapkan array untuk data yang akan ditampilkan di tabel
         
         for(int i = 0; i < barangList.size(); i++){
             data[i][0] = barangList.get(i).getKode_barang();
@@ -304,8 +350,8 @@ public class BarangFrame extends javax.swing.JFrame {
             data[i][2] = barangList.get(i).getDeskripsi();
         }
         
-        DefaultTableModel tableModel = new DefaultTableModel(data, kolom);
-        tblBarang.setModel(tableModel);
+        DefaultTableModel tableModel = new DefaultTableModel(data, kolom); // Membuat DefaultTableModel dengan data dan kolom yang sudah disiapkan
+        tblBarang.setModel(tableModel);// Mengatur model tabel (tblBarang) dengan DefaultTableModel yang sudah dibuat
         
         
     }
