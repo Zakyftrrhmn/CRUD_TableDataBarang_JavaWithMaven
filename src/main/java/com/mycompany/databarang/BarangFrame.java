@@ -142,28 +142,29 @@ public class BarangFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtJudul)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtKode)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(fieldKode))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtNama)
-                            .addComponent(txtDeskripsi))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(fieldDeskripsi, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(fieldNama, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnSimpan)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnUbah)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnHapus))))
-                    .addComponent(jScrollPane1))
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(txtJudul)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(txtKode)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(fieldKode))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtNama)
+                                .addComponent(txtDeskripsi))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(fieldDeskripsi, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(fieldNama, javax.swing.GroupLayout.PREFERRED_SIZE, 396, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(btnSimpan)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btnUbah)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnHapus)))))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 697, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -206,6 +207,13 @@ public class BarangFrame extends javax.swing.JFrame {
     private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
         // TODO add your handling code here:
         
+        String kod = fieldKode.getText();
+        
+        if(kod.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Isi data anda terlebih dahulu!!");
+            return;
+        }
+        
         String sql = "INSERT INTO data_barang VALUES(?, ?, ?)"; // Query untuk melakukan Tambah data ke tabel data_barang
         
         try {
@@ -223,13 +231,6 @@ public class BarangFrame extends javax.swing.JFrame {
             // Menampilkan pesan berhasil atau gagal berdasarkan hasil eksekusi
             if(simpan > 0){
                 JOptionPane.showMessageDialog(this, "Data Berhasil Disimpan");
-                
-                
-//              Mengatur agar setelah menambahkan data fieldnya langsung kosong
-                fieldKode.setText(null); 
-                fieldNama.setText(null);
-                fieldDeskripsi.setText(null);
-                
             }else{
                 JOptionPane.showMessageDialog(this, "Data Gagal Disimpan");
             }
@@ -291,23 +292,22 @@ public class BarangFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnUbahActionPerformed
 
     private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
-        // TODO add your handling code here:
-        
-        // TODO add your handling code here:
-        int index = tblBarang.getSelectedRow();  // Mendapatkan indeks baris yang dipilih dari tabel
+         int index = tblBarang.getSelectedRow();  // Mendapatkan indeks baris yang dipilih dari tabel
 
-        if (index == -1) {
-            JOptionPane.showMessageDialog(this, "Pilih baris yang ingin dihapus.");
-            return;
-        }
+            if (index == -1) {
+                JOptionPane.showMessageDialog(this, "Pilih baris yang ingin dihapus.");
+                return;
+            }
 
-        Barang br = barangList.get(index);  // Mendapatkan objek Barang dari ArrayList berdasarkan indeks
+            Barang br = barangList.get(index);  // Mendapatkan objek Barang dari ArrayList berdasarkan indeks
 
             // Menampilkan dialog konfirmasi sebelum menghapus data
             int option = JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin menghapus data?", "Konfirmasi Hapus Data", JOptionPane.YES_NO_OPTION);
             if (option != JOptionPane.YES_OPTION) {
                 return;  // Menghentikan proses jika pengguna memilih "NO"
             }
+
+            barangList.remove(index);  // Menghapus objek Barang dari ArrayList
 
             String sql = "DELETE FROM data_barang WHERE kode_barang = ?";
 
@@ -319,17 +319,7 @@ public class BarangFrame extends javax.swing.JFrame {
 
                 if (hapus > 0) {
                     JOptionPane.showMessageDialog(this, "Data Berhasil Dihapus");
-
-                    // Mengatur agar setelah menghapus data, fieldnya langsung kosong
-                    fieldKode.setText(null);
-                    fieldNama.setText(null);
-                    fieldDeskripsi.setText(null);
-
-                    // Menghapus objek Barang dari ArrayList setelah dihapus dari database
-                    barangList.remove(index);
-
-                    // Memperbarui tampilan tabel
-                    tampilkanBarang();
+                    tampilkanBarang();  // Memperbarui tampilan tabel
 
                 } else {
                     JOptionPane.showMessageDialog(this, "Data Gagal Dihapus");
@@ -403,6 +393,10 @@ public class BarangFrame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void tampilkanBarang() {
+        
+        fieldKode.setText(null);
+        fieldNama.setText(null);
+        fieldDeskripsi.setText(null);
         
         barangList.clear(); // Menghapus isi dari ArrayList barangList 
         
